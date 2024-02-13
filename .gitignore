@@ -34,3 +34,10 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Env
+.env.production
+.env.dev
+.env.production
+.env
+/prisma/migrations
