@@ -2,7 +2,6 @@ import Image from "next/image";
 import googleLogo from "@/public/google.png";
 import githubLogo from "@/public/github.png";
 import {
-
   GithubSignInButton,
   GoogleSignInButton,
 } from "@/components/authButtons";
@@ -17,7 +16,7 @@ export default async function SignInPage() {
 
   console.log("Session: ", session);
 
-  if (session) return redirect("/timeline");
+  if (session) return redirect("/apps");
 
   return (
     <div className="antialiased bg-gradient-to-br from-gray-400 to-white">
@@ -50,14 +49,14 @@ export default async function SignInPage() {
           <div className="w-full md:w-full lg:w-9/12 mx-auto md:mx-0">
             <div className="bg-white p-10 flex flex-col w-full shadow-xl rounded-xl">
               <h2 className="text-2xl font-bold text-gray-800 text-left mb-5">
-                Registrarte
+                Iniciar Sesión
               </h2>
               <CredentialsForm />
-              <span className="text-2xl font-semibold text-gray-700 text-center mt-8">
+              {/* <span className="text-2xl font-semibold text-gray-700 text-center mt-8">
                 O
               </span>
               <GoogleSignInButton />
-              <GithubSignInButton />
+              <GithubSignInButton /> */}
               </div>
           </div>
         </div>

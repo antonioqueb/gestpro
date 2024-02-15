@@ -1,10 +1,15 @@
+// lib/auth.ts
+import 'server-only'
 import { NextAuthOptions, User, getServerSession } from "next-auth";
 import { useSession } from "next-auth/react";
 import { redirect, useRouter } from "next/navigation";
+import bcrypt from 'bcrypt';
+
 
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 import GithubProvider from "next-auth/providers/github";
+
 
 import prisma from "./prisma";
 
@@ -23,25 +28,24 @@ export const authConfig: NextAuthOptions = {
       async authorize(credentials) {
         if (!credentials || !credentials.email || !credentials.password)
           return null;
-
+ 
         const dbUser = await prisma.user.findFirst({
-          where: { email: credentials.email },
-        });
-
-        
-
-        
-
-        //Verify Password here
-        //We are going to use a simple === operator
-        //In production DB, passwords should be encrypted using something like bcrypt...
-        if (dbUser && dbUser.password === credentials.password) {
-          const { password, createdAt, id, ...dbUserWithoutPassword } = dbUser;
-          return dbUserWithoutPassword as User;
-        }
-
-        return null;
-      },
+            where: { email: credentials.email },
+          });
+ 
+          //Verify Password here
+          if (dbUser) {
+            const passwordMatch = await bcrypt.compare(credentials.password, dbUser.password);
+ 
+            if (passwordMatch) {
+                const { password, createdAt, id, ...dbUserWithoutPassword } = dbUser;
+                return dbUserWithoutPassword as User;
+              }
+          }
+ 
+          return null;
+        },
+      
     }),
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID as string,
@@ -65,4 +69,21 @@ export function loginIsRequiredClient() {
     const router = useRouter();
     if (!session) router.push("/");
   }
+}
+
+export async function createUser(email: string, password: string, name: string) { 
+  const existingUser = await prisma.user.findFirst({ where: { email } });
+  if (existingUser) {
+    throw new Error("User already exists");
+  }
+
+  const newUser = await prisma.user.create({
+    data: {
+      name: // Asignamos el email como nombre para cumplir con el tipo esperado
+      email,
+      password,
+    },
+  });
+
+  return newUser;
 }

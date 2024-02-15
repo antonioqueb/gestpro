@@ -19,7 +19,7 @@ const WrapperLink = ({ children, isTweetPage, href }) =>
 
 export default function Tweet({ tweet, isTweetPage }: TweetProps) {
   return (
-    <WrapperLink href={`/timeline/${tweet.id}`} isTweetPage={isTweetPage}>
+    <WrapperLink href={`/apps/${tweet.id}`} isTweetPage={isTweetPage}>
       <div className="flex flex-col border-b border-gray-600 p-4 max-w-2xl">
         <div className="flex space-x-3">
           <img

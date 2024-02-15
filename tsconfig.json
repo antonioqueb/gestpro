@@ -24,6 +24,6 @@
       "@/*": ["./*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "components/RegisterForm.js", "components/credentialsForm.js"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "components/RegisterForm.js", "components/credentialsForm.js", "app/api/user/create.js", "lib/auth.js", "app/apps/layout.js", "components/Navbar.js"],
   "exclude": ["node_modules"]
 }

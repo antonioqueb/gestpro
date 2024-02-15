@@ -36,7 +36,7 @@ export const AddComment = ({ tweet }: AddCommentProps) => {
 
     await saveCommentToDB(newCommentData);
 
-    revalidatePath(`/timeline/${tweetId}`);
+    revalidatePath(`/apps/${tweetId}`);
   }
 
   return (

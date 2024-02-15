@@ -11,35 +11,38 @@ import {
   FaUserAlt,
   FaEllipsisH,
 } from "react-icons/fa";
+
+
 import { VscTwitter } from "react-icons/vsc";
 
 import { signOut } from "next-auth/react";
 
-function TwitterNavbar() {
+function Navbar() {
   return (
     <div className="flex flex-col justify-between h-screen p-4">
       <div className="flex flex-col items-center">
-        <VscTwitter className="text-gray-200 text-4xl mb-4" />
+      <h2 className="align-items-center mb-4 text-3xl font-extrabold leading-none tracking-normal text-gray-900 md:text-1xl md:tracking-tight">
+          <span className="block w-full py-2 text-transparent bg-clip-text leading-12 bg-gradient-to-r from-green-600 to-green-600 lg:inline"><span className="text-black">Gest</span>Pro<span className="text-white"></span></span>
+      </h2>
         <nav className="mb-4">
-          <NavItem icon={<FaHome className="text-xl" />} label="Home" />
-          <NavItem icon={<FaHashtag className="text-xl" />} label="Explore" />
+          <NavItem icon={<FaHome className="text-xl" />} label="Dashboard" />
           <NavItem
             icon={<FaRegBell className="text-xl" />}
-            label="Notifications"
+            label="Ventas"
           />
           <NavItem
             icon={<FaRegEnvelope className="text-xl" />}
-            label="Messages"
+            label="Compras"
           />
           <NavItem
             icon={<FaRegBookmark className="text-xl" />}
-            label="Bookmarks"
+            label="Inventario"
           />
           <NavItem icon={<FaRegListAlt className="text-xl" />} label="Lists" />
           <NavItem icon={<FaUserAlt className="text-xl" />} label="Profile" />
           <NavItem icon={<FaEllipsisH className="text-xl" />} label="More" />
         </nav>
-        <button className="w-full bg-blue-500 text-white rounded-full py-3 font-bold">
+        <button className="w-full bg-green-500 text-white rounded-full py-3 font-bold">
           Tweet
         </button>
       </div>
@@ -62,4 +65,4 @@ const NavItem = ({ icon, label }) => (
   </div>
 );
 
-export default TwitterNavbar;
+export default Navbar;

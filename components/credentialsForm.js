@@ -20,8 +20,8 @@ export function CredentialsForm(props) {
     });
 
     if (signInResponse && !signInResponse.error) {
-      // Redirect to homepage (/timeline)
-      router.push("/timeline");
+      // Redirect to homepage (/apps)
+      router.push("/apps");
     } else {
       console.log("Error: ", signInResponse);
       setError
@@ -60,6 +60,12 @@ export function CredentialsForm(props) {
       >
         Log in
       </button>
+      <div className="flex items-center justify-end my-2">
+               
+                  <a className="inline-block align-baseline font-bold text-sm text-green-500 hover:text-green-800" href="/registro" >
+                    No tienes una cuenta? Registrate
+                  </a>
+                </div>
     </form>
   );
 };

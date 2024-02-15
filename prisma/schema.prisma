@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -10,34 +7,115 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Tweet {
+model Sales {
   id        Int       @id @default(autoincrement())
-  text      String
+  sellerId  Int
+  seller    User      @relation(fields: [sellerId], references: [id])
+  products  Product[]
   createdAt DateTime  @default(now())
-  // updatedAt DateTime @updatedAt
-  authorId  Int
-  author    User      @relation(fields: [authorId], references: [id])
-  comments  Comment[]
+  companyId Int?
+  company   Company?  @relation(fields: [companyId], references: [id]) 
+
+  @@map("sales_${sellerId}")
+}
+
+
+model Company {
+  id        Int    @id @default(autoincrement())
+  name      String
+  users     User[]
+  sales     Sales[] // Add an inverse relationship reference 
+  currency  String
+  taxId     String // Equivalent to 'RFC'
+
+  // New fields
+  address   String
+  phone     String
+  email     String
+  website   String
+  logo      String 
+  description String
+  tagLine String
+
+  // Relationships
+  // One-to-many relationship with employees 
+  employees String
+
+  // Methods
+
 }
 
 model User {
   id        Int       @id @default(autoincrement())
-  name      String
+  name      String?
+  username  String?   @unique
   email     String    @unique
-  password  String
+  password  String 
   createdAt DateTime  @default(now())
-  // updatedAt DateTime @updatedAt
-  tweets    Tweet[]
-  comments  Comment[]
+  ventas    Sales[]
+  apiKey    String    @unique @default(cuid())
+  role          String    @default("user")
+  isActive      Boolean   @default(true)
+  profilePicture String?
+  phoneNumber   String?
+  address       String?
+  companyId     Int?
+  department    String?
+  jobTitle      String?
+  license       String  @default("free")
+  company       Company?  @relation(fields: [companyId], references: [id])
+
+
+
+
+
 }
 
-model Comment {
-  id        Int      @id @default(autoincrement())
-  text      String
-  createdAt DateTime @default(now())
-  // updatedAt DateTime @updatedAt @default(now())
-  tweetId   Int
-  tweet     Tweet    @relation(fields: [tweetId], references: [id])
-  authorId  Int
-  author    User     @relation(fields: [authorId], references: [id])
+model Product {
+  id            Int       @id @default(autoincrement())
+  sku           String    @unique  // Código único de producto
+  name          String    @db.VarChar(255)  // Nombre del producto
+  description   String?   // Descripción detallada del producto
+  brand         String?   // Marca del producto
+  model         String?   // Modelo del producto (si aplica)
+  category      String?   // Categoría a la que pertenece el producto
+  tags          String[]  // Etiquetas para facilitar la búsqueda
+  cost          Float     // Costo de adquisición del producto
+  price         Float     // Precio de venta del producto
+  stock         Int       // Stock actual del producto
+  stockMin      Int       // Stock mínimo para reabastecimiento
+  stockMax      Int       // Stock máximo para evitar sobrestock
+  weight        Float     // Peso del producto
+  dimensions    String?   // Dimensiones del producto (ej. largo x ancho x alto)
+  images        String[]  // URLs de imágenes del producto
+  status        String    @default("active") // Estado del producto (activo, inactivo, descontinuado)
+
+  ventaId       Int?      // Relación con la venta (si se desea asociar a una venta específica)
+  venta         Sales?   @relation(fields: [ventaId], references: [id])
+
+  supplierId    Int       // Relación con el proveedor del producto
+  supplier      Supplier  @relation(fields: [supplierId], references: [id])
+}
+
+model Supplier {
+  id            Int       @id @default(autoincrement())
+  name          String    @db.VarChar(255)  // Supplier name
+  businessName  String?   // Supplier's business name
+  rfc           String?   // Registro Federal de Contribuyentes (Mexico)
+  personType    String?   // Type of person (individual, legal entity)
+  contact       String?   // Main contact name
+  phone         String?   // Phone number
+  email         String?   // Email address
+  address       String?   // Supplier address
+  country       String?   // Supplier country
+  state         String?   // State or province of the supplier
+  city          String?   // Supplier city
+  postalCode    String?   // Supplier postal code
+  website       String?   // Supplier website
+  notes         String?   // Additional notes about the supplier
+  active        Boolean   @default(true) // Indicates if the supplier is active
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  
+  products      Product[]   // Agregar relación inversa
 }

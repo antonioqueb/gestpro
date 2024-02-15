@@ -1,3 +1,6 @@
+// lib/time-ago.ts
+// import 'server-only'
+
 export function timeAgo(dateParam: Date) {
   const getDifferenceInUnits = (
     unit: string,
