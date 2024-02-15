@@ -41,6 +41,9 @@ model Company {
   // One-to-many relationship with employees 
   employees String
 
+
+
+
   // Methods
 
 }
@@ -118,4 +121,85 @@ model Supplier {
   updatedAt     DateTime  @updatedAt
   
   products      Product[]   // Agregar relación inversa
+}
+
+
+model Purchase {
+  id           Int         @id @default(autoincrement())
+  supplierId   Int         @map("supplier_id")  // Relación con Proveedor
+  purchaseDate DateTime    @default(now()) 
+  invoiceNumber String?     // Número de factura (puede ser único)
+  status       String      @default("pending") // Estado de la compra (pendiente, recibida, cancelada, etc.)
+  notes        String?     // Notas adicionales
+  companyId    Int?        // Relación con Empresa
+
+  // Relación con los productos comprados:
+  products     PurchaseProduct[]  
+}
+
+// Tabla relacional para almacenar compras de productos y cantidades
+model PurchaseProduct {
+  id           Int      @id @default(autoincrement())
+  purchaseId   Int      @map("purchase_id")
+  purchase     Purchase @relation(fields: [purchaseId], references: [id])
+  productId    Int      @map("product_id")
+  unitCost     Float    // Costo unitario 
+} 
+
+
+model Inventory {
+  id         Int      @id @default(autoincrement())
+  productId  Int      @map("product_id")
+  quantity   Int      // Cantidad en existencia
+  companyId  Int?     // Relación con Empresa
+}
+
+model Customer {
+  id            Int          @id @default(autoincrement())
+  name          String       // Nombre o razón social del cliente
+  contactName   String?      // Nombre de contacto
+  email         String       @unique
+  phoneNumber   String?
+  address       String?
+  taxId         String?      //  Identificación fiscal (RFC en México)
+  companyId     Int?         
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+}
+
+model Invoice {
+  id             Int          @id @default(autoincrement())
+  customerId     Int          @map("customer_id")
+  invoiceNumber  String       @unique // Número de factura único
+  invoiceDate    DateTime     @default(now())
+  dueDate        DateTime     
+  subtotal       Float         
+  tax            Float         
+  total          Float  
+  status         String       @default("pending") // pendiente, pagada, anulada, etc.  
+  notes          String?     
+  companyId      Int?
+
+  lineItems      InvoiceLineItem[]    
+}
+
+model InvoiceLineItem {
+  id           Int        @id @default(autoincrement())
+  invoiceId    Int        @map("invoice_id")
+  invoice      Invoice    @relation(fields: [invoiceId], references: [id])
+  productId    Int?       @map("product_id")      // Si se factura un producto
+  description  String     // Descripción de la línea 
+  quantity     Int
+  unitPrice    Float       
+  amount       Float   
+}
+
+model Payment {
+    id              Int         @id @default(autoincrement())
+    customerId      Int         @map("customer_id")
+    invoiceId       Int         @map("invoice_id")
+    paymentDate     DateTime    @default(now())
+    amount          Float   
+    paymentMethod   String       
+    referenceNumber String?     
 }
