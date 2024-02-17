@@ -1,13 +1,14 @@
+// --- ----- ----- ------ ----- ------ ------ ----- ----- ---
 generator client {
   provider = "prisma-client-js"
-  
 }
-
+// --- ----- ----- ------ ----- ------ ------ ----- ----- ---
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
-
+// --- ----- ----- ------ ----- ------ ------ ----- ----- ---
+// CATALOGOS
 enum Role {
   USER
   EMPLOYED
@@ -16,60 +17,445 @@ enum Role {
   CONSULTANT
   DEVELOPER
 }
-
+// --- ----- ----- ------ ----- ------ ------ ----- ----- ---
 enum Licence {
   FREE
   OPERATION
 }
-
-
+// --- ----- ----- ------ ----- ------ ------ ----- ----- ---
 model User {
   // Información de identificación
-  id                  Int     @id @default(autoincrement())
-  username            String @unique
-  email               String  @unique
-
+  id               Int        @id @default(autoincrement())
+  username         String     @unique
+  email            String     @unique
   // Información personal
-  name                String
-  last_name           String?
-  profile_picture     String?
-  gender              String?
-  marital_status      String?
-  date_of_birth       DateTime?
-  pace_of_birth       DateTime?
-  lang                String
-  tax_id              String?
-  country             String?
-  estate              String?
-  curp                String?
-
+  name             String
+  last_name        String?
+  profile_picture  String?
+  gender           String?
+  marital_status   String?
+  date_of_birth    DateTime?
+  pace_of_birth    DateTime?
+  lang             String
+  tax_id           String?
+  country          String?
+  estate           String?
+  curp             String?
   // Información de contacto
-  phone_number        String?
-  whatsapp            String?
-  mailing_address     String?
-  recovery_mail       String?
-  website             String?
-  instagram_url       String?
-  facebook_url        String?
-  tiktok_url          String?
-  linkedin_url        String?
-  youtube_url         String?
-  tw_x_url            String?
-  behance_url         String?
-
+  phone_number     String?
+  whatsapp         String?
+  mailing_address  String?
+  recovery_mail    String?
+  website          String?
+  instagram_url    String?
+  facebook_url     String?
+  tiktok_url       String?
+  linkedin_url     String?
+  youtube_url      String?
+  tw_x_url         String?
+  behance_url      String?
   // Información laboral
-  industry_id         String?
-  job_title           String?
-  department          String?
-  location            String?
-  reports_to          String?
-
+  industry_id      String?
+  job_title        String?
+  department       String?
+  location         String?
+  // Información de cuenta
+  password         String
+  is_active        Boolean    @default(true)
+  license          String     @default("FREE")
+  role             String     @default("USER")
+  created_at       DateTime   @default(now())
+  // Información de Relaciones
+  companies        Companies[]
+  
+}
+// --- ----- ----- ------ ----- ------ ------ ----- ----- ---
+model Companies {
+  // Información de identificación
+  id               Int        @id @default(autoincrement())
+  tax_id           String     @unique
+  // Información de la marca
+  name             String
+  slogan           String?
+  photo            String?
+  num_employed     Int
+  currency         String
+  address          String
+  phone            String
+  email            String
+  website          String
+  logo             String
+  description      String
+  tag_line         String
 
   // Información de cuenta
-  password            String
-  is_active           Boolean  @default(true)
-  license             String    @default("FREE")
-  role                String    @default("USER")
-  created_at          DateTime @default(now())
+  
+  // Información de relaciones
+  owner_user_id    Int
+  owner_user       User @relation(fields: [owner_user_id], references: [id])
+
+  employees        Employees[]
+  clients          Clients[]
+  providers        Providers[]
+  products         Products[]
+  purchase         Purchase[]
+  Inventories      Inventories[]
+  payments         Payments[]
+  invoices_purchase         InvoicedPurchase[]
+  sales            Sales[]
+  order_purchase   OrderPurchase[]
+  order_sales      OrderSales[]
+  invoices_sales    InvoicesSales[]
+  
+  }
+// --- ----- ----- ------ ----- ------ ------ ----- ----- ---
+model Employees {
+  // Información de identificación
+  id             Int    @id @default(autoincrement())
+  employed_num   Int    @unique
+
+  // Información personal
+  first_name     String
+  last_name      String
+  email          String
+  phone_number   String
+  address        String
+  city           String
+  state          String
+  zip_code       String
+  country        String
+
+  // Información laboral
+  department     String
+  job_title      String
+  salary         Float
+  hire_date      DateTime
+
+  // Información de contacto de emergencia
+  emergency_contact_name  String
+  emergency_contact_phone String
+  emergency_contact_email String
+
+
+  // Información de relaciones
+  company_id Int 
+  company      Companies @relation(fields: [company_id], references: [id])
+
+}
+// --- ----- ----- ------ ----- ------ ------ ----- ----- ---
+model Clients {
+
+ // Información de identificación
+  id               Int        @id @default(autoincrement())
+  email            String     @unique
+  // Información personal
+  name             String
+  last_name        String?
+  profile_picture  String?
+  gender           String?
+  marital_status   String?
+  date_of_birth    DateTime?
+  pace_of_birth    DateTime?
+  country          String?
+  estate           String?
+  lang             String
+  tax_id           String?
+  curp             String?
+ 
+  // Información de contacto
+  phone_number     String?
+  whatsapp         String?
+  mailing_address  String?
+  recovery_mail    String?
+  website          String?
+  instagram_url    String?
+  facebook_url     String?
+  tiktok_url       String?
+  linkedin_url     String?
+  youtube_url      String?
+  tw_x_url         String?
+  behance_url      String?
+  // Información laboral
+  industry_id      String?
+  job_title        String?
+  department       String?
+  location         String?
+  
+  // Información de cuenta
+  password         String
+  is_active        Boolean    @default(true)
+  license          String     @default("FREE")
+  role             String     @default("USER")
+  created_at       DateTime   @default(now())
+
+
+  // Información de relaciones
+
+  companie_id Int 
+  company Companies @relation(fields: [companie_id], references: [id])
+
+
+
+}
+// --- ----- ----- ------ ----- ------ ------ ----- ----- ---
+model Providers {
+
+  // Información de identificación
+  id               Int        @id @default(autoincrement())
+  email            String     @unique
+  // Información personal
+  name             String
+  last_name        String?
+  profile_picture  String?
+  gender           String?
+  marital_status   String?
+  date_of_birth    DateTime?
+  pace_of_birth    DateTime?
+  country          String?
+  estate           String?
+  lang             String
+  tax_id           String?
+  curp             String?
+ 
+  // Información de contacto
+  phone_number     String?
+  whatsapp         String?
+  mailing_address  String?
+  recovery_mail    String?
+  website          String?
+  instagram_url    String?
+  facebook_url     String?
+  tiktok_url       String?
+  linkedin_url     String?
+  youtube_url      String?
+  tw_x_url         String?
+  behance_url      String?
+  // Información laboral
+  industry_id      String?
+  job_title        String?
+  department       String?
+  location         String?
+  
+  // Información de cuenta
+  password         String
+  is_active        Boolean    @default(true)
+  license          String     @default("FREE")
+  role             String     @default("USER")
+  created_at       DateTime   @default(now())
+
+
+  // Información de relaciones
+  companies_id Int
+  companies Companies @relation(fields: [companies_id], references: [id])
+  
+}
+// --- ----- ----- ------ ----- ------ ------ ----- ----- ---
+model Products {
+
+  // Información de identificación
+    id            Int       @id @default(autoincrement())
+    sku           String    @unique 
+
+  // Información detalles
+  name          String    @db.VarChar(255)  // Nombre del producto
+  description   String?  
+  brand         String?   
+  model         String?  
+  category      String?   
+  tags          String[]  
+  cost          Float     
+  price         Float    
+  weight        Float     
+  dimensions    String?   
+  images        String[]  
+  status        String    @default("active") 
+
+  // Información de relaciones
+  companies_id Int
+  companies Companies @relation(fields: [companies_id], references: [id])
+  inventories ProductsInvenatory[]
+  
+  
+
+}
+// --- ----- ----- ------ ----- ------ ------ ----- ----- ---
+model Purchase {
+  id           Int         @id @default(autoincrement())
+  supplierId   Int         @map("supplier_id")  // Relación con Proveedor
+  purchaseDate DateTime    @default(now()) 
+  invoiceNumber String?     // Número de factura (puede ser único)
+  status       String      @default("pending") // Estado de la compra (pendiente, recibida, cancelada, etc.)
+  notes        String?     // Notas adicionales
+
+    // Información de relaciones
+  companies_id Int
+  companies Companies @relation(fields: [companies_id], references: [id])
+  invoices  InvoicedPurchase[]
+
+  
+
 }
 
+model Sales {
+  id           Int         @id @default(autoincrement())
+  sale_date DateTime    @default(now()) 
+  invoice_number String?     // Número de factura (puede ser único)
+  status       String      @default("pending") // Estado de la compra (pendiente, recibida, cancelada, etc.)
+  notes        String?     // Notas adicionales
+
+    // Información de relaciones
+  companies_id Int
+  companies Companies @relation(fields: [companies_id], references: [id])
+  invoiced_sales    InvoicesSales[]
+  
+
+}
+
+model Inventories {
+  id         Int      @id @default(autoincrement())
+  productId  Int      @map("product_id")
+  quantity   Int      // Cantidad en existencia
+  companyId  Int?     // Relación con Empresa
+
+    // Información de relaciones
+  companies_id Int
+  companies Companies @relation(fields: [companies_id], references: [id])
+  products ProductsInvenatory[]
+  
+  
+}
+
+// Tabla de unión
+
+model ProductsInvenatory {
+  inventory_id Int
+  inventory Inventories @relation(fields: [inventory_id], references: [id])
+  products_id Int
+  products Products @relation(fields: [products_id], references: [id])
+
+  @@id([inventory_id, products_id])
+}
+
+
+model Payments {
+    id              Int         @id @default(autoincrement())
+    customerId      Int         @map("customer_id")
+    invoiceId       Int         @map("invoice_id")
+    paymentDate     DateTime    @default(now())
+    amount          Float   
+    paymentMethod   String       
+    referenceNumber String?     
+
+      // Información de relaciones
+    companies_id Int
+    companies Companies @relation(fields: [companies_id], references: [id])
+  
+}
+
+model InvoicedPurchase {
+  id             Int          @id @default(autoincrement())
+  customerId     Int          @map("customer_id")
+  invoiceNumber  String       @unique // Número de factura único
+  invoiceDate    DateTime     @default(now())
+  dueDate        DateTime     
+  subtotal       Float         
+  tax            Float         
+  total          Float  
+  status         String       @default("pending") // pendiente, pagada, anulada, etc.  
+  notes          String?     
+  companyId      Int?
+
+  // Información de relaciones
+  companies_id Int
+  companies Companies @relation(fields: [companies_id], references: [id])
+  order_purchare_id Int
+  order_purchase Purchase @relation(fields: [order_purchare_id], references: [id])
+   
+}
+
+model OrderSales {
+    id           Int         @id @default(autoincrement())
+    order_sale_date DateTime    @default(now()) 
+    invoiceNumber String?     // Número de factura (puede ser único)
+    status       String      @default("pending") // Estado de la compra (pendiente, recibida, cancelada, etc.)
+    notes        String?     // Notas adicionales
+
+      // Información de relaciones
+    companies_id Int
+    companies Companies @relation(fields: [companies_id], references: [id])
+  
+}
+
+model OrderPurchase {
+    id           Int         @id @default(autoincrement())
+    order_sale_date DateTime    @default(now()) 
+    invoiceNumber String?     // Número de factura (puede ser único)
+    status       String      @default("pending") // Estado de la compra (pendiente, recibida, cancelada, etc.)
+    notes        String?     // Notas adicionales
+
+      // Información de relaciones
+    companies_id Int
+    companies Companies @relation(fields: [companies_id], references: [id])
+  
+}
+
+
+
+model InvoicesSales {
+  id             Int          @id @default(autoincrement())
+  customerId     Int          @map("customer_id")
+  invoiceNumber  String       @unique // Número de factura único
+  invoiceDate    DateTime     @default(now())
+  dueDate        DateTime     
+  subtotal       Float         
+  tax            Float         
+  total          Float  
+  status         String       @default("pending") // pendiente, pagada, anulada, etc.  
+  notes          String?     
+  companyId      Int?
+
+  // Información de relaciones
+  companies_id Int
+  companies Companies @relation(fields: [companies_id], references: [id])
+  order_sales_id Int
+  order_sales Sales @relation(fields: [order_sales_id], references: [id])
+   
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Tabla de unión
+
+
+// Unión de Tabla Usuario y Tabla Companies
+
+// model UserCompanies {
+//   user_id Int
+//   user User @relation(fields: [user_id], references: [id])
+//   companies_id Int
+//   companies Companies @relation(fields: [companies_id], references: [id])
+
+//   @@id([user_id, companies_id])
+// }
